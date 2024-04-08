@@ -12,5 +12,6 @@ func main() {
 	// queue.UseQueue()
 	// stack.UseStack()
 	search.UseDFS()
+	search.UseBFS()
 
 }

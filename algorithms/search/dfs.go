@@ -69,15 +69,20 @@ var ExampleCompany = Company{
 
 func UseDFS() {
 
+	count := 0
+
 	stack := NewStack()
 
 	stack.push(ExampleCompany)
 
 	for stack.size() > 0 {
+		count++
+
 		currObj := stack.pop()
 
 		v := reflect.ValueOf(currObj)
 		t := reflect.TypeOf(currObj)
+		// fmt.Printf("%+v - %+v\n\n", t.Name(), v)
 
 		if t.Kind() != reflect.Struct {
 			log.Fatalf("not a struct, but %v", v.Kind())
@@ -85,26 +90,25 @@ func UseDFS() {
 		}
 
 		for i := 0; i < v.NumField(); i++ {
+			if v.Field(i).Kind() == reflect.Struct {
+				obj := v.Field(i).Interface()
+				stack.push(obj)
+				continue
+			}
 
 			currT := t.Field(i).Name
 			currV := v.Field(i).Interface()
 
-			if currT == "LastName" && currV == "Langley" {
-				fmt.Println("Mr. Langley is found")
+			if currT == "LastName" && currV == "Paxton" {
+				fmt.Printf("DFS ==> Mr. Paxton is found, used stack %d times\n", count)
+				fmt.Printf("DFS ==> Here is full info on him %+v\n\n", v)
 				return
 			}
 
-			if v.Field(i).Kind() == reflect.Struct {
-
-				obj := v.Field(i).Interface()
-
-				stack.push(obj)
-
-			}
 		}
 
 	}
 
-	fmt.Println("not found")
+	fmt.Printf("DFS ==> not found, used stack %d times\n\n", count)
 
 }
