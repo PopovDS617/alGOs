@@ -1,7 +1,6 @@
 package search
 
 import (
-	"fmt"
 	"log"
 	"reflect"
 )
@@ -40,6 +39,7 @@ type Employee struct {
 }
 
 type Office struct {
+	Address    string
 	Head       Employee
 	HR         Employee
 	Accountant Employee
@@ -53,31 +53,28 @@ type Company struct {
 
 var ExampleCompany = Company{
 	NewYork: Office{
+		Address:    "Test avenue 1",
 		Head:       Employee{FirstName: "John", LastName: "Johnson", Age: 32, Position: "Head of the New York office"},
 		HR:         Employee{FirstName: "Max", LastName: "Paxton", Age: 33, Position: "HR of the New York office"},
 		Accountant: Employee{FirstName: "Richard", LastName: "Johansson", Age: 34, Position: "Accountant of the New York office"},
 	},
 	LosAngeles: Office{
+		Address:    "Test avenue 2",
 		Head:       Employee{FirstName: "Sarah", LastName: "Brodson", Age: 22, Position: "Head of the Los Angeles office"},
 		HR:         Employee{FirstName: "Louise", LastName: "Cooper", Age: 23, Position: "HR of the Los Angeles office"},
 		Accountant: Employee{FirstName: "Anna", LastName: "Gregson", Age: 24, Position: "Accountant of the Los Angeles office"}},
 	Washington: Office{
+		Address:    "Test avenue 3",
 		Head:       Employee{FirstName: "Patrick", LastName: "Hewett", Age: 42, Position: "Head of the Washington office"},
 		HR:         Employee{FirstName: "Richard", LastName: "Langley", Age: 43, Position: "HR of the Washington office"},
 		Accountant: Employee{FirstName: "Donovan", LastName: "Svergsson", Age: 44, Position: "Accountant of the Washington office"}},
 }
 
-func UseDFS() {
-
-	count := 0
-
+func UseDFS(key string, value string, structure any) bool {
 	stack := NewStack()
-
-	stack.push(ExampleCompany)
+	stack.push(structure)
 
 	for stack.size() > 0 {
-		count++
-
 		currObj := stack.pop()
 
 		v := reflect.ValueOf(currObj)
@@ -86,7 +83,7 @@ func UseDFS() {
 
 		if t.Kind() != reflect.Struct {
 			log.Fatalf("not a struct, but %v", v.Kind())
-			return
+			return false
 		}
 
 		for i := 0; i < v.NumField(); i++ {
@@ -99,16 +96,46 @@ func UseDFS() {
 			currT := t.Field(i).Name
 			currV := v.Field(i).Interface()
 
-			if currT == "LastName" && currV == "Paxton" {
-				fmt.Printf("DFS ==> Mr. Paxton is found, used stack %d times\n", count)
-				fmt.Printf("DFS ==> Here is full info on him %+v\n\n", v)
-				return
+			if currT == key && currV == value {
+				// fmt.Printf("BFS ===> Value is found, used queue %d times\n", count)
+				// fmt.Printf("BFS ===> Here is full info %+v\n\n", v)
+				return true
 			}
 
 		}
 
 	}
 
-	fmt.Printf("DFS ==> not found, used stack %d times\n\n", count)
+	return false
+	// fmt.Printf("DFS ==> not found, used stack %d times\n\n", count)
+}
+func UseDFSRecursively(key string, value string, currObj any) bool {
+
+	v := reflect.ValueOf(currObj)
+	t := reflect.TypeOf(currObj)
+	// fmt.Printf("%+v - %+v\n\n", t.Name(), v)
+
+	for i := 0; i < v.NumField(); i++ {
+		if v.Field(i).Kind() == reflect.Struct {
+			obj := v.Field(i).Interface()
+			res := UseDFSRecursively(key, value, obj)
+
+			if res {
+				return true
+			}
+		}
+
+		currT := t.Field(i).Name
+		currV := v.Field(i).Interface()
+
+		if currT == key && currV == value {
+			// fmt.Println("BFS ===> Value is found")
+			// fmt.Printf("BFS ===> Here is full info %+v\n\n", v)
+			return true
+		}
+
+	}
+
+	return false
 
 }
