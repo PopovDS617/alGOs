@@ -1,7 +1,7 @@
 package main
 
 import (
-	"algos/data_structures/stack"
+	"algos/algorithms/search"
 )
 
 func main() {
@@ -10,6 +10,7 @@ func main() {
 	// sort.UseQuickSort([]int{1024, 345, 44, 2, 25, 44, 1, 3, 101, 94})
 	// linkedlist.UseLinkedList()
 	// queue.UseQueue()
-	stack.UseStack()
+	// stack.UseStack()
+	search.UseDFS()
 
 }
