@@ -163,6 +163,32 @@ func TestUseDFSRecursively(t *testing.T) {
 	}
 
 }
+func TestUseDFSWithLL(t *testing.T) {
+	tests := []struct {
+		name     string
+		key      string
+		value    string
+		obj      any
+		expected bool
+	}{
+		{"nested_success", "Color", "Yellow", exampleNested, true},
+		{"nested_failure", "Color", "Green", exampleNested, false},
+		{"standard_success", "Color", "Yellow", exampleStandard, false},
+		{"standard_failure", "Color", "Green", exampleStandard, false},
+	}
+
+	for _, test := range tests {
+
+		t.Run(test.name, func(t *testing.T) {
+			res := UseDFSWithLL(test.key, test.value, test.obj)
+			if res != test.expected {
+				t.Errorf("expected %v to be %v", res, test.expected)
+			}
+		})
+
+	}
+
+}
 
 func BenchmarkUseBFS_Not_Nested_Value_Found(b *testing.B) {
 	for i := 0; i < b.N; i++ {
@@ -216,6 +242,25 @@ func BenchmarkUseDFSRecursively_Nested_Value_Found(b *testing.B) {
 func BenchmarkUseDFSRecursively_Nested_Value_Not_Found(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		UseDFSRecursively("Color", "Transparent", exampleNested)
+	}
+
+}
+
+func BenchmarkUseDFSWithLL_Not_Nested_Value_Found(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		UseDFSWithLL("Color", "Yellow", exampleStandard)
+	}
+
+}
+func BenchmarkUseDFSWithLL_Nested_Value_Found(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		UseDFSWithLL("Color", "Yellow", exampleNested)
+	}
+
+}
+func BenchmarkUseDFSWithLL_Nested_Value_Not_Found(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		UseDFSWithLL("Color", "Transparent", exampleNested)
 	}
 
 }

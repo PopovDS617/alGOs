@@ -37,12 +37,15 @@ func UseBFS(key string, value string, structure any) bool {
 
 	queue.enqueue(structure)
 
+	var v reflect.Value
+	var t reflect.Type
+
 	for queue.size() > 0 {
 
 		currObj := queue.dequeue()
 
-		v := reflect.ValueOf(currObj)
-		t := reflect.TypeOf(currObj)
+		v = reflect.ValueOf(currObj)
+		t = reflect.TypeOf(currObj)
 
 		// fmt.Printf("%+v - %+v\n\n", t.Name(), v)
 		if t.Kind() != reflect.Struct {

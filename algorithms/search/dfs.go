@@ -5,6 +5,64 @@ import (
 	"reflect"
 )
 
+type Node struct {
+	Data any
+	Prev *Node
+	Next *Node
+}
+
+type List struct {
+	Head *Node
+}
+
+func (l *List) add(value any) {
+
+	newNode := &Node{Data: value}
+
+	if l.Head == nil {
+		l.Head = newNode
+		return
+	}
+
+	curr := l.Head
+	for curr.Next != nil {
+		curr = curr.Next
+	}
+
+	curr.Next = newNode
+
+}
+
+func (l *List) remove(value any) {
+	if l.Head == nil {
+		return
+	}
+
+	if l.Head.Data == value {
+		l.Head = l.Head.Next
+		return
+	}
+
+	curr := l.Head
+	for curr.Next != nil && curr.Next.Data != value {
+		curr = curr.Next
+	}
+
+	if curr.Next != nil {
+		curr.Next = curr.Next.Next
+	}
+}
+
+func makeList(input []any) *List {
+	list := &List{}
+
+	for _, v := range input {
+		list.add(v)
+	}
+
+	return list
+}
+
 type stack struct {
 	data []any
 }
@@ -18,6 +76,7 @@ func (s *stack) size() int {
 }
 
 func (s *stack) push(newData any) {
+
 	s.data = append(s.data, newData)
 }
 
@@ -74,11 +133,14 @@ func UseDFS(key string, value string, structure any) bool {
 	stack := NewStack()
 	stack.push(structure)
 
+	var v reflect.Value
+	var t reflect.Type
+
 	for stack.size() > 0 {
 		currObj := stack.pop()
 
-		v := reflect.ValueOf(currObj)
-		t := reflect.TypeOf(currObj)
+		v = reflect.ValueOf(currObj)
+		t = reflect.TypeOf(currObj)
 		// fmt.Printf("%+v - %+v\n\n", t.Name(), v)
 
 		if t.Kind() != reflect.Struct {
@@ -138,4 +200,52 @@ func UseDFSRecursively(key string, value string, currObj any) bool {
 
 	return false
 
+}
+
+func UseDFSWithLL(key string, value string, structure any) bool {
+	arrayed := []any{structure}
+	list := makeList(arrayed)
+
+	currNode := list.Head
+
+	var v reflect.Value
+	var t reflect.Type
+
+	for currNode.Data != nil {
+
+		v = reflect.ValueOf(currNode.Data)
+		t = reflect.TypeOf(currNode.Data)
+
+		if t.Kind() != reflect.Struct {
+			log.Fatalf("not a struct, but %v", v.Kind())
+			return false
+		}
+
+		for i := 0; i < v.NumField(); i++ {
+			if v.Field(i).Kind() == reflect.Struct {
+
+				obj := v.Field(i).Interface()
+				list.add(obj)
+				continue
+			}
+
+			currT := t.Field(i).Name
+			currV := v.Field(i).Interface()
+
+			if currT == key && currV == value {
+				// fmt.Printf("BFS ===> Value is found, used queue %d times\n", count)
+				// fmt.Printf("BFS ===> Here is full info %+v\n\n", v)
+				return true
+			}
+
+		}
+		if currNode.Next == nil {
+			return false
+		} else {
+			currNode = currNode.Next
+		}
+	}
+
+	return false
+	// fmt.Printf("DFS ==> not found, used stack %d times\n\n", count)
 }

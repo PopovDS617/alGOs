@@ -13,5 +13,7 @@ func main() {
 	// fmt.Println("result is ", result)
 	// result = search.UseDFSRecursively("LastName", "Cooper", search.ExampleCompany)
 	// fmt.Println("result is ", result)
+	// result := search.UseDFSWithLL("LastName", "Cooper", search.ExampleCompany)
+	// fmt.Println("result is ", result)
 
 }
