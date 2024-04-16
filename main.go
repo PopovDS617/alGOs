@@ -1,7 +1,7 @@
 package main
 
 import (
-	"algos/algorithms/sort"
+	"algos/algorithms/search"
 )
 
 func main() {
@@ -19,7 +19,8 @@ func main() {
 	// fmt.Println("result is ", result)
 	// result := search.UseDFSWithLL("LastName", "Cooper", search.ExampleCompany)
 	// fmt.Println("result is ", result)
-	sort.UseInsertionSort([]int{100, 1, 90, 4}, true)
-	sort.UseInsertionSort([]int{1024, 345, 44, 2, 25, 44, 1, 3, 101, 94}, false)
+	// sort.UseInsertionSort([]int{100, 1, 90, 4}, true)
+	// sort.UseInsertionSort([]int{1024, 345, 44, 2, 25, 44, 1, 3, 101, 94}, false)
 
+	search.UseDijkstraAlg()
 }
